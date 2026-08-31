@@ -1,0 +1,42 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "settings": {
+      ".read": true,
+      ".write": false
+    },
+    "groupChallenge": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && (data.exists() || root.child('settings/joinOpen').val() === true)",
+        ".validate": "newData.hasChild('name')",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 30"
+        },
+        "entries": {
+          "$date": {
+            ".validate": "$date.matches(/^2026-09-(0[1-9]|[12][0-9]|30)$/)",
+            "selected": {
+              ".validate": "newData.hasChildren()",
+              "$index": {
+                ".validate": "$index.matches(/^[0-2]$/) && newData.isString() && newData.val().matches(/^(pushups|pullups|squats|situps|plank|walking|running|dancing|stairs|bird-dog)$/)"
+              }
+            },
+            "values": {
+              "$activity": {
+                ".validate": "$activity.matches(/^(pushups|pullups|squats|situps|plank|walking|running|dancing|stairs|bird-dog)$/) && newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999"
+              }
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

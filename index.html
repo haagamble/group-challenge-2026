@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#245f49">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Group Challenge">
+  <title>Group Challenge 2026</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="group-challenge.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Monthly group challenge</p>
+        <h1>Group Challenge 2026</h1>
+      </div>
+    </header>
+
+    <div id="testBanner" class="test-banner hidden">
+      <span><strong>Test mode</strong> - changes stay in this browser.</span>
+      <button class="btn" id="resetTestButton" type="button">Reset test data</button>
+    </div>
+
+    <div id="joinBox" class="join-box hidden">
+      <h2>Join the challenge</h2>
+      <p id="joinInstructions">Enter your name to join the group and track today's points.</p>
+      <div class="join-row">
+        <input id="joinName" type="text" maxlength="30" placeholder="Your name">
+        <button id="joinButton" class="btn primary" type="button">Join</button>
+      </div>
+    </div>
+
+    <div id="nameStatus" class="name-status">
+      <strong>Loading challenge...</strong>
+    </div>
+
+    <div id="nameGrid" class="name-grid hidden"></div>
+    <div id="identityNote" class="identity-note hidden"></div>
+
+    <main id="challengeContent" class="hidden">
+      <section class="stats-grid">
+        <article class="stat-card accent">
+          <div class="stat-label">Team today</div>
+          <div id="teamToday" class="stat-number">0</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Month total</div>
+          <div id="teamMonth" class="stat-number">0</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Goal progress</div>
+          <div id="goalPace" class="stat-number">0%</div>
+        </article>
+      </section>
+
+      <section class="goal-panel">
+        <div class="goal-header">
+          <span>Group goal</span>
+          <strong id="goalText">0 / 0</strong>
+        </div>
+        <div class="goal-bar">
+          <span id="goalBar"></span>
+        </div>
+        <div id="goalMessage" class="goal-message">On pace for the month.</div>
+      </section>
+
+      <details class="card panel instructions-panel">
+        <summary><span class="instructions-help-mark">?</span><span>How it works / FAQ</span></summary>
+        <div class="instructions-content">
+          <p>Choose 3 activities each day and enter what you actually did: reps, minutes, seconds, or stairs.</p>
+          <p>Each activity can earn up to 100 base points. Today's double-points activity can earn up to 200 points, so the daily max is 400.</p>
+          <p>The group goal is based on 250 points per person per day. Everyone can see team totals and participation, but individual point totals stay private.</p>
+          <p>Challenge days follow Eastern time. The 400 club celebrates people who reached 400 points yesterday.</p>
+          <p>Push ups may be wall pushups, knee pushups, or full pushups. Sit ups may be full sit ups or crunches. One bird dog rep means a right-left pair.</p>
+        </div>
+      </details>
+
+      <section class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="section-label">Today</div>
+            <h2 id="todayHeadline">September 1</h2>
+          </div>
+          <div id="doubleDayBadge" class="double-badge hidden">Double points</div>
+        </div>
+
+        <div class="card-note" id="dailyHint">Choose 3 activities. Aim for 250 points today. Max 400. Challenge days follow Eastern time.</div>
+
+        <div id="activityGrid" class="activity-grid"></div>
+      </section>
+
+      <section class="two-column">
+        <article class="card panel">
+          <div class="section-label">Your progress</div>
+          <div class="personal-summary">
+            <div>
+              <span class="mini-label">Your today</span>
+              <strong id="personalToday">0</strong>
+            </div>
+            <div>
+              <span class="mini-label">Your month</span>
+              <strong id="personalMonth">0</strong>
+            </div>
+            <div>
+              <span class="mini-label">Your daily average</span>
+              <strong id="personalAverage">0</strong>
+            </div>
+          </div>
+          <div id="personalActivities" class="personal-activities"></div>
+        </article>
+
+        <article class="card panel">
+          <div class="section-label">400 club</div>
+          <div id="clubList" class="club-list"></div>
+        </article>
+      </section>
+
+      <section class="card panel">
+        <div class="section-label">Who is participating</div>
+        <div id="participationList" class="participation-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <aside class="install-card hidden" id="installCard">
+    <div>
+      <strong id="installTitle">Add this app to your phone</strong>
+      <div id="installMessage" class="install-instructions">
+        <span><b>iPhone:</b> tap Share, then Add to Home Screen.</span>
+        <span><b>Android:</b> tap Install app if shown, or use the browser menu.</span>
+      </div>
+    </div>
+    <button class="btn primary hidden" id="installButton" type="button">Install app</button>
+    <button class="install-dismiss" id="installDismiss" type="button" aria-label="Dismiss install suggestion">x</button>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="firebase-config.js?v=2"></script>
+  <script src="group-challenge.js?v=25"></script>
+</body>
+</html>
