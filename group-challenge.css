@@ -304,6 +304,21 @@ h1 {
   margin: 0;
 }
 
+.target-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.target-list strong {
+  grid-column: 1 / -1;
+  color: var(--text);
+}
+
 .panel-header {
   display: flex;
   align-items: center;
@@ -677,6 +692,9 @@ h1 {
     display: grid;
   }
   .join-row { display: flex; }
+  .target-list {
+    grid-template-columns: 1fr;
+  }
   .install-card {
     align-items: flex-start;
     flex-direction: column;

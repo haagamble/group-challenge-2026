@@ -29,9 +29,9 @@
 
     <div id="joinBox" class="join-box hidden">
       <h2>Join the challenge</h2>
-      <p id="joinInstructions">Enter your name to join the group and track today's points.</p>
+      <p id="joinInstructions">Enter your first name to join the group and track today's points.</p>
       <div class="join-row">
-        <input id="joinName" type="text" maxlength="30" placeholder="Your name">
+        <input id="joinName" type="text" maxlength="30" placeholder="First name">
         <button id="joinButton" class="btn primary" type="button">Join</button>
       </div>
     </div>
@@ -76,6 +76,19 @@
           <p>Choose 3 activities each day and enter what you actually did: reps, minutes, seconds, or stairs.</p>
           <p>Break activities into whatever sets work for you. Your daily total counts, even if you spread it throughout the day.</p>
           <p>Each activity counts up to 100 points. If it is today's double-points activity, it can count up to 200. The daily max is 400.</p>
+          <div class="target-list" aria-label="100-point targets">
+            <strong>100-point targets</strong>
+            <span>Push ups: 50 reps</span>
+            <span>Pull ups: 10 reps</span>
+            <span>Squats: 100 reps</span>
+            <span>Sit ups: 100 reps</span>
+            <span>Plank: 5 minutes</span>
+            <span>Walking: 50 minutes</span>
+            <span>Running: 50 minutes</span>
+            <span>Dancing: 25 minutes</span>
+            <span>Stairs: 500 stairs</span>
+            <span>Bird dog: 50 right-left pairs</span>
+          </div>
           <p>The group goal is based on 250 points per person per day. People can see who joined and the team totals, but not each person's daily score.</p>
           <p>Challenge days follow Eastern time. The 400 club celebrates people who reached the daily max yesterday.</p>
           <p>Push ups may be wall pushups, knee pushups, or full pushups. Sit ups may be full sit ups or crunches. One bird dog rep means a right-left pair.</p>
@@ -123,7 +136,7 @@
       </section>
 
       <section class="card panel">
-        <div class="section-label">Who is participating</div>
+        <div class="section-label">Challenge members</div>
         <div id="participationList" class="participation-list"></div>
       </section>
     </main>
@@ -144,6 +157,6 @@
   <div class="toast" id="toast"></div>
 
   <script src="firebase-config.js?v=2"></script>
-  <script src="group-challenge.js?v=27"></script>
+  <script src="group-challenge.js?v=32"></script>
 </body>
 </html>

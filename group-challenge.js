@@ -286,7 +286,7 @@ async function saveOwnedRecord() {
 async function joinChallenge() {
   const name = (els.joinName.value || '').trim();
   if (!name) {
-    showToast('Please enter your name.');
+    showToast('Please enter your first name.');
     return;
   }
 
@@ -435,11 +435,11 @@ function renderStatus() {
     if (TEST_MODE) {
       els.nameStatus.innerHTML = '<strong>Your test group is empty.</strong>Add a pretend participant above to get started.';
     } else if (hasInvite && joinOpen) {
-      els.nameStatus.innerHTML = '<strong>Be the first to join.</strong>Enter your name above to start the challenge.';
+      els.nameStatus.innerHTML = '<strong>Be the first to join.</strong> Enter your first name above to start the challenge.';
     } else if (hasInvite && !joinOpen) {
       els.nameStatus.innerHTML = '<strong>Joining is closed.</strong>Ask the challenge organizer if you still need access.';
     } else {
-      els.nameStatus.innerHTML = '<strong>Ready to join?</strong>Open the invitation link you were sent.';
+      els.nameStatus.innerHTML = '<strong>Ready to join?</strong> Open the invitation link you were sent.';
     }
     return;
   }
@@ -745,10 +745,13 @@ function renderParticipationList() {
     const hasSaved = !!entry && entry.selected && entry.selected.length > 0;
     const item = document.createElement('div');
     item.className = 'participant-item';
-    item.innerHTML = `
-      <span class="participant-name">${escapeHtml(participant.name)}</span>
-      <span class="participant-status ${hasSaved ? 'active' : ''}">${hasSaved ? 'Participating' : 'Not yet'}</span>
-    `;
+    item.innerHTML = `<span class="participant-name">${escapeHtml(participant.name)}</span>`;
+    if (hasSaved) {
+      const status = document.createElement('span');
+      status.className = 'participant-status active';
+      status.textContent = 'Participating';
+      item.appendChild(status);
+    }
     els.participationList.appendChild(item);
   });
 }

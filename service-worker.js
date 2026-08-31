@@ -1,4 +1,4 @@
-const CACHE_NAME = 'group-challenge-v27';
+const CACHE_NAME = 'group-challenge-v32';
 const APP_SHELL = [
   './',
   './index.html',
