@@ -1,6 +1,6 @@
 {
-  "name": "Group Challenge",
-  "short_name": "Group",
+  "name": "Group Fitness Challenge",
+  "short_name": "Group Fit",
   "description": "A shared month-long fitness challenge with team goals and daily activity tracking.",
   "start_url": "./",
   "scope": "./",
