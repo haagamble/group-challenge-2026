@@ -46,7 +46,7 @@ The group goal is:
 participants x 30 days x 250 points
 ```
 
-Challenge days follow US Eastern time (`America/New_York`) for everyone. That
+Challenge days follow US Pacific time (`America/Los_Angeles`) for everyone. That
 means today's log, yesterday's 400 club, team daily totals, and double-points
 days all use the same shared challenge date even when participants are in
 different time zones.

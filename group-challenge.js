@@ -3,7 +3,7 @@ const FIREBASE_API_KEY = window.GROUP_CHALLENGE_FIREBASE_CONFIG?.apiKey || '';
 const JOIN_CODE = 'group26';
 const CHALLENGE_MONTH = 8; // September is month index 8 (zero-based).
 const CHALLENGE_YEAR = 2026;
-const CHALLENGE_TIME_ZONE = 'America/New_York';
+const CHALLENGE_TIME_ZONE = 'America/Los_Angeles';
 const DAYS_IN_MONTH = 30;
 const PERSON_GOAL = 7500;
 const TEST_STORAGE_KEY = 'group-challenge-test-data';
@@ -528,8 +528,8 @@ function renderDailyActivities() {
     ? `Starts ${formatDate(today)}`
     : formatDate(today);
   document.getElementById('dailyHint').textContent = isBeforeChallenge()
-    ? 'You can join now. Logging opens when the challenge starts on Eastern time.'
-    : 'Choose 3 activities. Aim for 250 points today. Max 400. Challenge days follow Eastern time.';
+    ? 'You can join now. Logging opens when the challenge starts on Pacific time.'
+    : 'Choose 3 activities. Aim for 250 points today. Max 400. Challenge days follow Pacific time.';
   els.doubleDayBadge.textContent = `2x today: ${getActivity(doubleId).name}`;
   els.doubleDayBadge.classList.remove('hidden');
   els.activityGrid.replaceChildren();
