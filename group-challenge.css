@@ -255,6 +255,12 @@ h1 {
   font-size: 14px;
 }
 
+.goal-yesterday {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .panel {
   padding: 18px;
   margin-bottom: 18px;

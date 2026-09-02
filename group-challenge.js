@@ -73,6 +73,7 @@ function cacheElements() {
   els.goalText = document.getElementById('goalText');
   els.goalBar = document.getElementById('goalBar');
   els.goalMessage = document.getElementById('goalMessage');
+  els.goalYesterday = document.getElementById('goalYesterday');
   els.activityGrid = document.getElementById('activityGrid');
   els.todayHeadline = document.getElementById('todayHeadline');
   els.doubleDayBadge = document.getElementById('doubleDayBadge');
@@ -504,6 +505,11 @@ function renderGoalMeta() {
   const daysElapsed = Math.max(1, getDaysElapsed());
   const paceTarget = Math.floor((goalTotal / DAYS_IN_MONTH) * daysElapsed);
   const onPace = monthTotal >= paceTarget;
+  const completedDays = Math.max(0, daysElapsed - 1);
+  const todayKey = formatDateKey(getCurrentDate());
+  const yesterdayTotal = computeMonthTotalBeforeDate(todayKey);
+  const yesterdayPaceTarget = Math.floor((goalTotal / DAYS_IN_MONTH) * completedDays);
+  const yesterdayDelta = yesterdayTotal - yesterdayPaceTarget;
 
   els.teamToday.textContent = formatNumber(teamTotal);
   els.teamMonth.textContent = formatNumber(monthTotal);
@@ -514,7 +520,8 @@ function renderGoalMeta() {
     ? `The challenge starts ${formatDate(getChallengeStartDate())}.`
     : onPace
     ? 'We are on pace to reach the goal.'
-    : `We need ${formatNumber(Math.max(0, paceTarget - monthTotal))} more points to stay on target.`;
+    : `We need ${formatNumber(Math.max(0, paceTarget - monthTotal))} more points to stay on target today.`;
+  els.goalYesterday.textContent = getYesterdayPaceMessage(completedDays, yesterdayDelta);
 }
 
 function renderDailyActivities() {
@@ -807,6 +814,23 @@ function computePlayerDailyAverage(uid) {
 
 function computeMonthTotal() {
   return participants.reduce((total, participant) => total + computePlayerMonthTotal(participant.uid), 0);
+}
+
+function computeMonthTotalBeforeDate(dateKeyLimit) {
+  return participants.reduce((total, participant) => {
+    const entryMap = entriesByUid[participant.uid] || {};
+    return total + Object.keys(entryMap).reduce((sum, dateKey) => {
+      if (!isChallengeDateKey(dateKey) || dateKey >= dateKeyLimit) return sum;
+      return sum + computePlayerTotalsForDate(participant.uid, dateKey);
+    }, 0);
+  }, 0);
+}
+
+function getYesterdayPaceMessage(completedDays, delta) {
+  if (isBeforeChallenge() || completedDays <= 0) return '';
+  if (delta === 0) return 'Yesterday we finished exactly on pace.';
+  if (delta > 0) return `Yesterday we finished ${formatNumber(delta)} points ahead of pace.`;
+  return `Yesterday we finished ${formatNumber(Math.abs(delta))} points behind pace.`;
 }
 
 function getPlayerEntry(uid, dateKey) {
