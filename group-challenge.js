@@ -730,7 +730,7 @@ function renderClubList() {
     const span = document.createElement('span');
     span.textContent = name;
     const strong = document.createElement('strong');
-    strong.textContent = '400 club';
+    strong.textContent = '400 pts';
     item.append(span, strong);
     els.clubList.appendChild(item);
   });
