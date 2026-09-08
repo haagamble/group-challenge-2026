@@ -445,15 +445,38 @@ h1 {
 }
 
 .activity-points {
-  color: var(--accent);
+  color: var(--text);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.activity-score {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.activity-logged {
+  margin-top: 4px;
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.activity-points.complete {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.activity-completion {
+  margin-top: 6px;
   font-size: 12px;
   font-weight: 700;
-  min-height: 17px;
 }
 
 .activity-card:not(.selected) .activity-points {
   color: var(--muted);
-  font-weight: 600;
 }
 
 .activity-actions {

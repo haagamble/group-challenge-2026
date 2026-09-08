@@ -571,9 +571,23 @@ function renderDailyActivities() {
     const amount = selected ? getActivityValueForToday(activity.id, dateKey) : 0;
     const basePoints = computeActivityBasePoints(activity, amount);
     const earnedPoints = isDouble ? basePoints * 2 : basePoints;
-    points.textContent = selected
-      ? `${earnedPoints} pts from ${formatAmount(activity, amount)}`
+    const atCap = selected && basePoints >= activity.maxPoints;
+    points.classList.toggle('complete', atCap);
+    const score = document.createElement('div');
+    score.className = 'activity-score';
+    score.textContent = `${earnedPoints} pts`;
+    const logged = document.createElement('div');
+    logged.className = 'activity-logged';
+    logged.textContent = selected
+      ? `${formatAmount(activity, amount)} logged`
       : `Enter ${activity.unit}`;
+    points.append(score, logged);
+    if (atCap) {
+      const completion = document.createElement('div');
+      completion.className = 'activity-completion';
+      completion.textContent = '\u2713 Daily cap reached';
+      points.appendChild(completion);
+    }
 
     const actions = document.createElement('div');
     actions.className = 'activity-actions';
@@ -605,8 +619,7 @@ function renderDailyActivities() {
     actions.append(toggle, value);
     card.append(head);
     if (isDouble) card.appendChild(doubleCallout);
-    card.append(meta);
-    card.append(points, actions);
+    card.append(points, meta, actions);
     els.activityGrid.appendChild(card);
   });
 }
