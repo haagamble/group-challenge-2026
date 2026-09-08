@@ -82,6 +82,10 @@ function cacheElements() {
   els.personalToday = document.getElementById('personalToday');
   els.personalAverage = document.getElementById('personalAverage');
   els.personalActivities = document.getElementById('personalActivities');
+  els.historyButton = document.getElementById('historyButton');
+  els.historyDialog = document.getElementById('historyDialog');
+  els.historyDays = document.getElementById('historyDays');
+  els.closeHistoryButton = document.getElementById('closeHistoryButton');
   els.clubList = document.getElementById('clubList');
   els.participationList = document.getElementById('participationList');
   els.installCard = document.getElementById('installCard');
@@ -93,6 +97,13 @@ function cacheElements() {
 }
 
 function bindEvents() {
+  els.historyButton.addEventListener('click', () => {
+    if (!ownedUid) return;
+    renderDailyHistory();
+    els.historyDialog.showModal();
+    els.historyDays.scrollTop = 0;
+  });
+  els.closeHistoryButton.addEventListener('click', () => els.historyDialog.close());
   els.joinButton.addEventListener('click', joinChallenge);
   els.resetButton.addEventListener('click', resetTestData);
   els.joinName.addEventListener('keydown', (event) => {
@@ -685,6 +696,7 @@ async function setOwnedEntry(dateKey, entry) {
 }
 
 function renderPersonalSummary() {
+  els.historyButton.disabled = !ownedUid;
   if (!ownedUid) {
     els.personalMonth.textContent = '0';
     els.personalToday.textContent = '0';
@@ -727,6 +739,55 @@ function renderPersonalActivities(entry) {
     row.append(label, value);
     els.personalActivities.appendChild(row);
   });
+}
+
+function renderDailyHistory() {
+  els.historyDays.replaceChildren();
+  const lastDay = isBeforeChallenge() ? 0 : getDaysElapsed();
+  if (!lastDay) {
+    els.historyDays.textContent = 'Your daily history will appear when the challenge starts.';
+    return;
+  }
+  for (let day = lastDay; day >= 1; day -= 1) {
+    const date = dateFromChallengeParts(CHALLENGE_YEAR, CHALLENGE_MONTH + 1, day);
+    const dateKey = formatDateKey(date);
+    const entry = getPlayerEntry(ownedUid, dateKey);
+    const section = document.createElement('section');
+    section.className = 'history-day';
+    const heading = document.createElement('h3');
+    heading.textContent = `${formatDate(date)} — ${formatNumber(computePlayerTotalsForDate(ownedUid, dateKey))} pts`;
+    section.appendChild(heading);
+    if (!entry?.selected?.length) {
+      const empty = document.createElement('p');
+      empty.className = 'personal-activity-empty';
+      empty.textContent = 'No activity logged';
+      section.appendChild(empty);
+    } else {
+      const list = document.createElement('ul');
+      list.className = 'history-activities';
+      const doubleId = getDoubleActivityId(date);
+      entry.selected.forEach((id) => {
+        const activity = getActivity(id);
+        if (!activity) return;
+        const amount = normalizeActivityAmount(activity, entry.values?.[id] || 0);
+        const points = computeActivityBasePoints(activity, amount) * (id === doubleId ? 2 : 1);
+        const row = document.createElement('li');
+        const description = document.createElement('div');
+        const name = document.createElement('span');
+        name.textContent = `${activity.name}${id === doubleId ? ' · 2× points' : ''}`;
+        const logged = document.createElement('div');
+        logged.className = 'activity-logged';
+        logged.textContent = `${formatAmount(activity, amount)} logged`;
+        description.append(name, logged);
+        const score = document.createElement('strong');
+        score.textContent = `${formatNumber(points)} pts`;
+        row.append(description, score);
+        list.appendChild(row);
+      });
+      section.appendChild(list);
+    }
+    els.historyDays.appendChild(section);
+  }
 }
 
 function renderClubList() {

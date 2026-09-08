@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest?v=33">
   <link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="group-challenge.css?v=39">
+  <link rel="stylesheet" href="group-challenge.css?v=40">
 </head>
 <body>
   <div class="app-shell">
@@ -130,6 +130,7 @@
             </div>
           </div>
           <div id="personalActivities" class="personal-activities"></div>
+          <button id="historyButton" class="btn primary history-button" type="button" aria-haspopup="dialog">View daily history</button>
         </article>
 
         <article class="card panel">
@@ -157,9 +158,17 @@
     <button class="install-dismiss" id="installDismiss" type="button" aria-label="Dismiss install suggestion">x</button>
   </aside>
 
+  <dialog id="historyDialog" class="history-dialog" aria-labelledby="historyTitle">
+    <div class="history-header">
+      <h2 id="historyTitle">Your daily history</h2>
+      <button id="closeHistoryButton" class="btn primary" type="button" autofocus>Close history &#10005;</button>
+    </div>
+    <div id="historyDays" class="history-days" tabindex="0" role="region" aria-label="Daily activity breakdowns"></div>
+  </dialog>
+
   <div class="toast" id="toast"></div>
 
   <script src="firebase-config.js?v=2"></script>
-  <script src="group-challenge.js?v=39"></script>
+  <script src="group-challenge.js?v=40"></script>
 </body>
 </html>
