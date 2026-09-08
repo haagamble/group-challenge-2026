@@ -6,7 +6,7 @@ work together toward a shared team goal.
 
 ## Features
 
-- 10 activity choices with per-activity point caps
+- 11 activity choices with per-activity point caps
 - Daily 3-activity selection
 - Automatic rotating double-points activity
 - Team daily total, month total, group goal, and pace status
@@ -28,8 +28,13 @@ work together toward a shared team goal.
 - Dancing: enter actual minutes, 20 points per 5 minutes
 - Stairs: enter actual stairs, 1 point per 5 stairs
 - Bird dog: enter actual reps, 2 points each
+- Other: enter 0-100 self-assessed points total per day for all unlisted activities.
+  100 means doable but challenging for you. Use a consistent standard and do not
+  count exercise already logged in another category. This uses one of the three
+  daily choices and is never doubled.
 
-The app records the actual amount entered, but each activity is capped at 100
+For Other, the entered value is limited to 100. For the remaining activities,
+the app records the actual amount entered, but each activity is capped at 100
 base points. For example, 100 push ups still shows as 100 push ups, but awards
 100 base points. The rotating double-points activity can make one selected
 activity worth 200 points, so the daily max is 400.

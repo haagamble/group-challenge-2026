@@ -22,7 +22,8 @@ const ACTIVITY_DEFS = [
   { id: 'running', name: 'Running', unit: 'minutes', pointsPerAmount: 10, amountPerPointUnit: 5, pointCapAmount: 50, maxPoints: 100, capLabel: '100 pt cap', notes: 'Enter minutes - 10 pts per 5 min' },
   { id: 'dancing', name: 'Dancing', unit: 'minutes', pointsPerAmount: 20, amountPerPointUnit: 5, pointCapAmount: 25, maxPoints: 100, capLabel: '100 pt cap', notes: 'Enter minutes - 20 pts per 5 min' },
   { id: 'stairs', name: 'Stairs', unit: 'stairs', pointsPerAmount: 1, amountPerPointUnit: 5, pointCapAmount: 500, maxPoints: 100, capLabel: '100 pt cap', notes: 'Enter stairs - 1 pt per 5 stairs' },
-  { id: 'bird-dog', name: 'Bird dog', unit: 'reps', pointsPerAmount: 2, amountPerPointUnit: 1, pointCapAmount: 50, maxPoints: 100, capLabel: '100 pt cap', notes: 'Enter reps - 2 pts each', detail: 'One rep means a right-left pair.' }
+  { id: 'bird-dog', name: 'Bird dog', unit: 'reps', pointsPerAmount: 2, amountPerPointUnit: 1, pointCapAmount: 50, maxPoints: 100, capLabel: '100 pt cap', notes: 'Enter reps - 2 pts each', detail: 'One rep means a right-left pair.' },
+  { id: 'other', name: 'Other', unit: 'points', pointsPerAmount: 1, amountPerPointUnit: 1, pointCapAmount: 100, maxPoints: 100, maxAmount: 100, capLabel: '100 pt daily cap', notes: 'Enter 0-100 points. See FAQ.' }
 ];
 
 const DOUBLE_ACTIVITY_SCHEDULE = [
@@ -783,7 +784,7 @@ function computePlayerTotalsForDate(uid, dateKey) {
 }
 
 function normalizeActivityAmount(activity, value) {
-  return Math.max(0, Math.min(Math.round(Number(value) || 0), 9999));
+  return Math.max(0, Math.min(Math.round(Number(value) || 0), activity.maxAmount ?? 9999));
 }
 
 function computeActivityBasePoints(activity, amount) {
