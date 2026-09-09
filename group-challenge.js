@@ -5,7 +5,7 @@ const CHALLENGE_MONTH = 8; // September is month index 8 (zero-based).
 const CHALLENGE_YEAR = 2026;
 const CHALLENGE_TIME_ZONE = 'America/Los_Angeles';
 const DAYS_IN_MONTH = 30;
-const PERSON_GOAL = 7500;
+const DAILY_PERSON_GOAL = 250;
 const TEST_STORAGE_KEY = 'group-challenge-test-data';
 const TEST_IDENTITY_STORAGE_KEY = 'group-challenge-test-player';
 const AUTH_STORAGE_KEY = 'group-challenge-firebase-auth';
@@ -512,15 +512,17 @@ function forgetTestIdentity() {
 function renderGoalMeta() {
   const teamTotal = computeTeamTotalForDate(getCurrentDate());
   const monthTotal = computeMonthTotal();
-  const goalTotal = participants.length * PERSON_GOAL;
+  const goalTotal = computeTeamGoalThroughDay(DAYS_IN_MONTH);
   const progress = goalTotal === 0 ? 0 : Math.min((monthTotal / goalTotal) * 100, 100);
-  const daysElapsed = Math.max(1, getDaysElapsed());
-  const paceTarget = Math.floor((goalTotal / DAYS_IN_MONTH) * daysElapsed);
+  const daysElapsed = isBeforeChallenge() ? 0 : getDaysElapsed();
+  const paceTarget = computeTeamGoalThroughDay(daysElapsed);
   const onPace = monthTotal >= paceTarget;
-  const completedDays = Math.max(0, daysElapsed - 1);
-  const todayKey = formatDateKey(getCurrentDate());
+  const parts = getChallengeDateParts();
+  const actualToday = dateFromChallengeParts(parts.year, parts.month, parts.day);
+  const completedDays = Math.max(0, Math.min(DAYS_IN_MONTH, Math.floor((actualToday - getChallengeStartDate()) / ONE_DAY_MS)));
+  const todayKey = formatDateKey(actualToday);
   const yesterdayTotal = computeMonthTotalBeforeDate(todayKey);
-  const yesterdayPaceTarget = Math.floor((goalTotal / DAYS_IN_MONTH) * completedDays);
+  const yesterdayPaceTarget = computeTeamGoalThroughDay(completedDays);
   const yesterdayDelta = yesterdayTotal - yesterdayPaceTarget;
 
   els.teamToday.textContent = formatNumber(teamTotal);
@@ -530,6 +532,8 @@ function renderGoalMeta() {
   els.goalBar.style.width = `${progress}%`;
   els.goalMessage.textContent = isBeforeChallenge()
     ? `The challenge starts ${formatDate(getChallengeStartDate())}.`
+    : goalTotal === 0
+    ? 'The team goal begins when someone logs their first points.'
     : onPace
     ? 'We are on pace to reach the goal.'
     : `We need ${formatNumber(Math.max(0, paceTarget - monthTotal))} more points to stay on target today.`;
@@ -885,6 +889,20 @@ function computePlayerDailyAverage(uid) {
 
   const total = loggedDates.reduce((sum, dateKey) => sum + computePlayerTotalsForDate(uid, dateKey), 0);
   return Math.round(total / loggedDates.length);
+}
+
+function computeTeamGoalThroughDay(lastDay) {
+  if (isBeforeChallenge()) return 0;
+  const todayKey = formatDateKey(getCurrentDate());
+  return participants.reduce((total, participant) => {
+    const firstDate = Object.keys(entriesByUid[participant.uid] || {})
+      .filter((dateKey) => isChallengeDateKey(dateKey) && dateKey <= todayKey)
+      .sort()
+      .find((dateKey) => computePlayerTotalsForDate(participant.uid, dateKey) > 0);
+    if (!firstDate) return total;
+    const firstDay = Number(firstDate.slice(-2));
+    return total + Math.max(0, Math.min(lastDay, DAYS_IN_MONTH) - firstDay + 1) * DAILY_PERSON_GOAL;
+  }, 0);
 }
 
 function computeMonthTotal() {

@@ -48,8 +48,13 @@ Inclusive movement notes:
 The group goal is:
 
 ```text
-participants x 30 days x 250 points
+sum of (days from each person's first positive-point day through September 30 x 250)
 ```
+
+People who have not scored any points add nothing to the goal. Once someone
+starts, skipped days still count. Team pace counts 250 points per day from each
+person's first scoring day through the date being measured. Start dates are
+calculated from saved entries, so corrections to those entries update the goal.
 
 Challenge days follow US Pacific time (`America/Los_Angeles`) for everyone. That
 means today's log, yesterday's 400 club, team daily totals, and double-points
