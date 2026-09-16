@@ -438,6 +438,30 @@ body:has(.history-dialog[open]) {
 }
 
 .history-day { padding: 16px 0; }
+.team-stats-content { padding-top: 16px; }
+.team-stats-summary {
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.team-stats-summary > strong { font-size: 20px; }
+.team-stats-summary p { margin: 8px 0 0; font-size: 14px; }
+.team-stats-note { color: var(--text-soft); font-size: 14px; line-height: 1.5; }
+.team-stats-day {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.team-stats-day.goal-met { background: var(--accent-soft); border-color: #b7d9c7; }
+.team-stats-day h3 { margin: 0; font-size: 16px; }
+.team-stats-result { margin: 8px 0 12px; font-weight: 700; color: var(--text-soft); }
+.goal-met .team-stats-result { color: var(--accent); }
+.team-stats-values { display: grid; gap: 8px; margin: 0; font-size: 14px; }
+.team-stats-values > div { display: flex; justify-content: space-between; gap: 12px; }
+.team-stats-values dt { color: var(--text-soft); }
+.team-stats-values dd { margin: 0; font-weight: 700; text-align: right; }
 .history-day + .history-day { border-top: 1px solid var(--border); }
 .history-day h3 { margin: 0 0 12px; font-size: 16px; }
 .history-activities { list-style: none; padding: 0; margin: 0; }

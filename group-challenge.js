@@ -88,6 +88,10 @@ function cacheElements() {
   els.historyDays = document.getElementById('historyDays');
   els.closeHistoryButton = document.getElementById('closeHistoryButton');
   els.helpButton = document.getElementById('helpButton');
+  els.teamStatsButton = document.getElementById('teamStatsButton');
+  els.teamStatsDialog = document.getElementById('teamStatsDialog');
+  els.teamStatsContent = document.getElementById('teamStatsContent');
+  els.closeTeamStatsButton = document.getElementById('closeTeamStatsButton');
   els.helpDialog = document.getElementById('helpDialog');
   els.helpContent = document.getElementById('helpContent');
   els.closeHelpButton = document.getElementById('closeHelpButton');
@@ -102,6 +106,12 @@ function cacheElements() {
 }
 
 function bindEvents() {
+  els.teamStatsButton.addEventListener('click', () => {
+    renderTeamStats();
+    els.teamStatsDialog.showModal();
+    els.teamStatsContent.scrollTop = 0;
+  });
+  els.closeTeamStatsButton.addEventListener('click', () => els.teamStatsDialog.close());
   els.helpButton.addEventListener('click', () => {
     els.helpDialog.showModal();
     els.helpContent.scrollTop = 0;
@@ -564,6 +574,57 @@ function renderGoalMeta() {
   els.goalYesterday.classList.toggle('behind', showYesterday && yesterdayDelta < 0);
   els.goalYesterday.classList.toggle('on-pace', showYesterday && yesterdayDelta >= 0);
   els.goalYesterday.textContent = showYesterday ? getYesterdayPaceMessage(completedDays, yesterdayDelta) : '';
+}
+
+function computeTeamDailyStats() {
+  if (isBeforeChallenge()) return [];
+  const parts = getChallengeDateParts();
+  const actualTodayKey = formatDateKey(dateFromChallengeParts(parts.year, parts.month, parts.day));
+  const rows = [];
+  let previousGoal = 0;
+  for (let day = 1; day <= getDaysElapsed(); day++) {
+    const date = dateFromChallengeParts(CHALLENGE_YEAR, CHALLENGE_MONTH + 1, day);
+    const dateKey = formatDateKey(date);
+    const cumulativeGoal = computeTeamGoalThroughDay(day);
+    const goal = cumulativeGoal - previousGoal;
+    previousGoal = cumulativeGoal;
+    const eligible = goal / DAILY_PERSON_GOAL;
+    const points = computeTeamTotalForDate(date);
+    const logged = participants.filter(person => computePlayerTotalsForDate(person.uid, dateKey) > 0).length;
+    rows.push({ date, points, goal, eligible, logged,
+      average: eligible ? Math.round(points / eligible) : null,
+      percent: goal ? Math.floor(points / goal * 100) : null,
+      met: goal > 0 && points >= goal,
+      isToday: dateKey === actualTodayKey });
+  }
+  return rows;
+}
+
+function renderTeamStats() {
+  const rows = computeTeamDailyStats();
+  const completed = rows.filter(row => !row.isToday && row.goal > 0);
+  const wins = completed.filter(row => row.met).length;
+  const best = completed.reduce((leader, row) => !leader || row.points > leader.points ? row : leader, null);
+  els.teamStatsContent.innerHTML = `
+    <div class="team-stats-summary">
+      <strong>${wins ? `${wins} ${wins === 1 ? 'day' : 'days'} we met our daily goal!` : 'Every day is a new chance to meet our goal.'}</strong>
+      <p>${completed.length ? `${wins} of ${completed.length} completed days with a team goal.` : 'Completed-day results will appear after the first day of participation.'}</p>
+      ${best ? `<p>Best team total: <b>${formatNumber(best.points)} points</b> on ${formatDate(best.date)}.</p>` : ''}
+    </div>
+    <p class="team-stats-note">Each day stands on its own: we can meet that day's goal even while catching up for the month. Today's results are still in progress and are excluded from the summary above.</p>
+    <p class="team-stats-note">The daily goal is 250 points per participant, starting with their first day of points. The participant average includes skipped days after that. Participation counts people who logged points. Team totals can grow as more people start.</p>
+    ${rows.length ? rows.slice().reverse().map(row => `
+      <section class="team-stats-day ${row.met ? 'goal-met' : ''}">
+        <h3>${formatDate(row.date)}${row.isToday ? ' · Today, in progress' : ''}</h3>
+        <p class="team-stats-result">${row.met ? '&#10003; Daily goal met!' : row.goal === 0 ? 'No team goal yet' : row.isToday ? 'Working toward today\'s goal' : 'Daily goal not reached'}</p>
+        <dl class="team-stats-values">
+          <div><dt>Team points</dt><dd>${formatNumber(row.points)}</dd></div>
+          <div><dt>Daily goal</dt><dd>${formatNumber(row.goal)}</dd></div>
+          <div><dt>Daily goal achieved</dt><dd>${row.percent === null ? '—' : `${formatNumber(row.percent)}%`}</dd></div>
+          <div><dt>Average per participant</dt><dd>${row.average === null ? '—' : `${formatNumber(row.average)} pts`}</dd></div>
+          <div><dt>People who logged points</dt><dd>${row.logged} of ${row.eligible}</dd></div>
+        </dl>
+      </section>`).join('') : '<p>The challenge has not started yet.</p>'}`;
 }
 
 function renderDailyActivities() {

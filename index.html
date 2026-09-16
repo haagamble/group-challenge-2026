@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest?v=33">
   <link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="group-challenge.css?v=46">
+  <link rel="stylesheet" href="group-challenge.css?v=47">
 </head>
 <body>
   <div class="app-shell">
@@ -70,6 +70,7 @@
         <div id="goalYesterday" class="goal-yesterday"></div>
         <div id="goalMessage" class="goal-message">On pace for the month.</div>
         <div id="goalTodayTarget" class="goal-today-target hidden"></div>
+        <button id="teamStatsButton" class="btn primary history-button" type="button" aria-haspopup="dialog" aria-controls="teamStatsDialog">View team stats</button>
       </section>
 
       <button id="helpButton" class="card panel instructions-button" type="button" aria-haspopup="dialog" aria-controls="helpDialog"><span class="instructions-help-mark" aria-hidden="true">?</span><span>How it works / FAQ</span></button>
@@ -173,9 +174,17 @@
     <div id="historyDays" class="history-days" tabindex="0" role="region" aria-label="Daily activity breakdowns"></div>
   </dialog>
 
+  <dialog id="teamStatsDialog" class="history-dialog" aria-labelledby="teamStatsTitle">
+    <div class="history-header">
+      <h2 id="teamStatsTitle">Team stats</h2>
+      <button id="closeTeamStatsButton" class="btn primary" type="button" autofocus>Close stats &#10005;</button>
+    </div>
+    <div id="teamStatsContent" class="history-days team-stats-content" tabindex="0" role="region" aria-label="Team daily results"></div>
+  </dialog>
+
   <div class="toast" id="toast"></div>
 
   <script src="firebase-config.js?v=2"></script>
-  <script src="group-challenge.js?v=46"></script>
+  <script src="group-challenge.js?v=47"></script>
 </body>
 </html>
