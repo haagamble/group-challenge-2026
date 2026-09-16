@@ -87,6 +87,10 @@ function cacheElements() {
   els.historyDialog = document.getElementById('historyDialog');
   els.historyDays = document.getElementById('historyDays');
   els.closeHistoryButton = document.getElementById('closeHistoryButton');
+  els.helpButton = document.getElementById('helpButton');
+  els.helpDialog = document.getElementById('helpDialog');
+  els.helpContent = document.getElementById('helpContent');
+  els.closeHelpButton = document.getElementById('closeHelpButton');
   els.clubList = document.getElementById('clubList');
   els.participationList = document.getElementById('participationList');
   els.installCard = document.getElementById('installCard');
@@ -98,6 +102,11 @@ function cacheElements() {
 }
 
 function bindEvents() {
+  els.helpButton.addEventListener('click', () => {
+    els.helpDialog.showModal();
+    els.helpContent.scrollTop = 0;
+  });
+  els.closeHelpButton.addEventListener('click', () => els.helpDialog.close());
   els.historyButton.addEventListener('click', () => {
     if (!ownedUid) return;
     renderDailyHistory();

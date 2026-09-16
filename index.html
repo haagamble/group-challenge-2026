@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest?v=33">
   <link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="group-challenge.css?v=45">
+  <link rel="stylesheet" href="group-challenge.css?v=46">
 </head>
 <body>
   <div class="app-shell">
@@ -72,33 +72,7 @@
         <div id="goalTodayTarget" class="goal-today-target hidden"></div>
       </section>
 
-      <details class="card panel instructions-panel">
-        <summary><span class="instructions-help-mark">?</span><span>How it works / FAQ</span></summary>
-        <div class="instructions-content">
-          <p>Choose 3 activities each day and enter what you actually did: reps, minutes, seconds, stairs, or self-assessed points for Other.</p>
-          <p>Break activities into whatever sets work for you. Your daily total counts, even if you spread it throughout the day.</p>
-          <p>Each activity counts up to 100 points. If it is today's double-points activity, it can count up to 200. The daily max is 400.</p>
-          <div class="target-list" aria-label="100-point targets">
-            <strong>100-point targets</strong>
-            <span>Push ups: 50 reps</span>
-            <span>Pull ups: 10 reps</span>
-            <span>Squats: 100 reps</span>
-            <span>Sit ups: 100 reps</span>
-            <span>Plank: 5 minutes</span>
-            <span>Walking: 50 minutes</span>
-            <span>Running: 50 minutes</span>
-            <span>Dancing: 25 minutes</span>
-            <span>Stairs: 500 stairs</span>
-            <span>Bird dog: 50 right-left pairs</span>
-            <span>Other: a doable but challenging amount of exercise for you</span>
-          </div>
-          <p>Other covers swimming, football, cycling, and other unlisted activities. Award yourself up to 100 points total each day across these activities, with 100 meaning doable but challenging for you. Use a consistent standard, and only count exercise you have not logged in another category. Other counts as one of your 3 choices and does not receive double points.</p>
-          <p>Each person adds 250 points per day to the goal, from their first day with points through September 30. The goal grows as people start participating.</p>
-          <p>This includes days they skip afterward. Joining without logging points does not add to the goal. Starting September 9 adds 5,500 points (22 days); starting September 11 adds 5,000 (20 days). Team pace uses the same start dates. People can see who joined and the team totals, but not each person's daily score.</p>
-          <p>Challenge days follow Pacific time. The 400 club celebrates people who reached the daily max yesterday.</p>
-          <p>Push ups may be wall pushups, knee pushups, or full pushups. Sit ups may be full sit ups or crunches. Stairs can be up and/or down. One bird dog rep means a right-left pair. Dancing may be ballet, breakdancing, kitchen dancing, or any movement you are prepared to defend as rhythmic.</p>
-        </div>
-      </details>
+      <button id="helpButton" class="card panel instructions-button" type="button" aria-haspopup="dialog" aria-controls="helpDialog"><span class="instructions-help-mark" aria-hidden="true">?</span><span>How it works / FAQ</span></button>
 
       <section class="card panel">
         <div class="panel-header">
@@ -160,6 +134,37 @@
     <button class="install-dismiss" id="installDismiss" type="button" aria-label="Dismiss install suggestion">x</button>
   </aside>
 
+  <dialog id="helpDialog" class="history-dialog" aria-labelledby="helpTitle">
+    <div class="history-header">
+      <h2 id="helpTitle">How it works / FAQ</h2>
+      <button id="closeHelpButton" class="btn primary" type="button" autofocus>Close help &#10005;</button>
+    </div>
+    <div id="helpContent" class="instructions-content" tabindex="0" role="region" aria-label="Challenge instructions and frequently asked questions">
+          <p>Choose 3 activities each day and enter what you actually did: reps, minutes, seconds, stairs, or self-assessed points for Other.</p>
+          <p>Break activities into whatever sets work for you. Your daily total counts, even if you spread it throughout the day.</p>
+          <p>Each activity counts up to 100 points. If it is today's double-points activity, it can count up to 200. The daily max is 400.</p>
+          <div class="target-list" aria-label="100-point targets">
+            <strong>100-point targets</strong>
+            <span>Push ups: 50 reps</span>
+            <span>Pull ups: 10 reps</span>
+            <span>Squats: 100 reps</span>
+            <span>Sit ups: 100 reps</span>
+            <span>Plank: 5 minutes</span>
+            <span>Walking: 50 minutes</span>
+            <span>Running: 50 minutes</span>
+            <span>Dancing: 25 minutes</span>
+            <span>Stairs: 500 stairs</span>
+            <span>Bird dog: 50 right-left pairs</span>
+            <span>Other: a doable but challenging amount of exercise for you</span>
+          </div>
+          <p>Other covers swimming, football, cycling, and other unlisted activities. Award yourself up to 100 points total each day across these activities, with 100 meaning doable but challenging for you. Use a consistent standard, and only count exercise you have not logged in another category. Other counts as one of your 3 choices and does not receive double points.</p>
+          <p>Each person adds 250 points per day to the goal, from their first day with points through September 30. The goal grows as people start participating.</p>
+          <p>This includes days they skip afterward. Joining without logging points does not add to the goal. Starting September 9 adds 5,500 points (22 days); starting September 11 adds 5,000 (20 days). Team pace uses the same start dates. People can see who joined and the team totals, but not each person's daily score.</p>
+          <p>Challenge days follow Pacific time. The 400 club celebrates people who reached the daily max yesterday.</p>
+          <p>Push ups may be wall pushups, knee pushups, or full pushups. Sit ups may be full sit ups or crunches. Stairs can be up and/or down. One bird dog rep means a right-left pair. Dancing may be ballet, breakdancing, kitchen dancing, or any movement you are prepared to defend as rhythmic.</p>
+    </div>
+  </dialog>
+
   <dialog id="historyDialog" class="history-dialog" aria-labelledby="historyTitle">
     <div class="history-header">
       <h2 id="historyTitle">Your daily history</h2>
@@ -171,6 +176,6 @@
   <div class="toast" id="toast"></div>
 
   <script src="firebase-config.js?v=2"></script>
-  <script src="group-challenge.js?v=44"></script>
+  <script src="group-challenge.js?v=46"></script>
 </body>
 </html>

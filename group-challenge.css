@@ -291,22 +291,15 @@ h1 {
   margin-bottom: 18px;
 }
 
-.instructions-panel {
-  color: var(--text-soft);
-}
-
-.instructions-panel summary {
-  display: inline-flex;
+.instructions-button {
+  display: flex;
+  width: 100%;
+  text-align: left;
   align-items: center;
   gap: 8px;
   color: var(--text);
   cursor: pointer;
   font-weight: 700;
-  list-style: none;
-}
-
-.instructions-panel summary::-webkit-details-marker {
-  display: none;
 }
 
 .instructions-help-mark {
@@ -326,7 +319,11 @@ h1 {
 .instructions-content {
   display: grid;
   gap: 10px;
-  margin-top: 14px;
+  padding: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  color: var(--text-soft);
   font-size: 14px;
   line-height: 1.5;
 }
