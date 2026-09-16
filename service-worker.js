@@ -1,4 +1,4 @@
-const CACHE_NAME = 'group-challenge-v47';
+const CACHE_NAME = 'group-challenge-v48';
 const APP_SHELL = [
   './',
   './index.html',
@@ -14,7 +14,7 @@ const APP_SHELL = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
+      .then((cache) => cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });
@@ -34,7 +34,8 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   event.respondWith(
-    fetch(request).then((response) => {
+    // Revalidate page loads so reopening does not reuse stale HTTP-cached HTML.
+    fetch(request, request.mode === 'navigate' ? { cache: 'no-cache' } : {}).then((response) => {
       const copy = response.clone();
       caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
       return response;
