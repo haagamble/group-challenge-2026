@@ -75,6 +75,7 @@ function cacheElements() {
   els.goalBar = document.getElementById('goalBar');
   els.goalMessage = document.getElementById('goalMessage');
   els.goalYesterday = document.getElementById('goalYesterday');
+  els.goalTodayTarget = document.getElementById('goalTodayTarget');
   els.activityGrid = document.getElementById('activityGrid');
   els.todayHeadline = document.getElementById('todayHeadline');
   els.doubleDayBadge = document.getElementById('doubleDayBadge');
@@ -411,8 +412,9 @@ function renderNames() {
   const canJoin = TEST_MODE || (hasInvite && joinOpen && !ownedUid && loadState === 'ready');
   els.joinBox.classList.toggle('hidden', !canJoin);
 
-  participants.forEach((participant) => {
-    const chip = document.createElement(TEST_MODE ? 'button' : 'div');
+  // Keep the participant picker only for switching users in browser test mode.
+  (TEST_MODE ? participants : []).forEach((participant) => {
+    const chip = document.createElement('button');
     chip.className = `member-chip ${participant.uid === currentUid ? 'active' : ''} ${participant.uid === ownedUid ? 'me' : ''}`;
     chip.textContent = participant.uid === ownedUid ? `${participant.name} (you)` : participant.name;
     if (TEST_MODE) {
@@ -422,7 +424,7 @@ function renderNames() {
     els.nameGrid.appendChild(chip);
   });
 
-  els.nameGrid.classList.toggle('hidden', participants.length === 0);
+  els.nameGrid.classList.toggle('hidden', !TEST_MODE || participants.length === 0);
   renderStatus();
   renderIdentityNote();
 }
@@ -516,7 +518,6 @@ function renderGoalMeta() {
   const progress = goalTotal === 0 ? 0 : Math.min((monthTotal / goalTotal) * 100, 100);
   const daysElapsed = isBeforeChallenge() ? 0 : getDaysElapsed();
   const paceTarget = computeTeamGoalThroughDay(daysElapsed);
-  const onPace = monthTotal >= paceTarget;
   const parts = getChallengeDateParts();
   const actualToday = dateFromChallengeParts(parts.year, parts.month, parts.day);
   const completedDays = Math.max(0, Math.min(DAYS_IN_MONTH, Math.floor((actualToday - getChallengeStartDate()) / ONE_DAY_MS)));
@@ -524,6 +525,10 @@ function renderGoalMeta() {
   const yesterdayTotal = computeMonthTotalBeforeDate(todayKey);
   const yesterdayPaceTarget = computeTeamGoalThroughDay(completedDays);
   const yesterdayDelta = yesterdayTotal - yesterdayPaceTarget;
+  const challengeEnded = completedDays >= DAYS_IN_MONTH;
+  const todayTarget = Math.max(0, paceTarget - yesterdayTotal);
+  const remaining = Math.max(0, todayTarget - teamTotal);
+  const showTodayTarget = !isBeforeChallenge() && !challengeEnded && goalTotal > 0;
 
   els.teamToday.textContent = formatNumber(teamTotal);
   els.teamMonth.textContent = formatNumber(monthTotal);
@@ -534,10 +539,22 @@ function renderGoalMeta() {
     ? `The challenge starts ${formatDate(getChallengeStartDate())}.`
     : goalTotal === 0
     ? 'The team goal begins when someone logs their first points.'
-    : onPace
-    ? 'We are on pace to reach the goal.'
-    : `We need ${formatNumber(Math.max(0, paceTarget - monthTotal))} more points to stay on target today.`;
-  els.goalYesterday.textContent = getYesterdayPaceMessage(completedDays, yesterdayDelta);
+    : challengeEnded
+    ? monthTotal >= goalTotal
+      ? 'Challenge complete! We reached our group goal.'
+      : `Challenge complete. We finished ${formatNumber(goalTotal - monthTotal)} points short of our group goal.`
+    : remaining === 0
+    ? 'Today\'s pace target is met! Every extra point puts us further ahead.'
+    : `${formatNumber(remaining)} more points needed today to finish on pace.`;
+  els.goalTodayTarget.classList.toggle('hidden', !showTodayTarget);
+  els.goalTodayTarget.textContent = showTodayTarget
+    ? `Team target today: ${formatNumber(todayTarget)} points${yesterdayDelta < 0 ? ' (includes yesterday\'s shortfall)' : ''}`
+    : '';
+  const showYesterday = completedDays > 0 && !challengeEnded && yesterdayPaceTarget > 0;
+  els.goalYesterday.classList.toggle('hidden', !showYesterday);
+  els.goalYesterday.classList.toggle('behind', showYesterday && yesterdayDelta < 0);
+  els.goalYesterday.classList.toggle('on-pace', showYesterday && yesterdayDelta >= 0);
+  els.goalYesterday.textContent = showYesterday ? getYesterdayPaceMessage(completedDays, yesterdayDelta) : '';
 }
 
 function renderDailyActivities() {
@@ -921,9 +938,9 @@ function computeMonthTotalBeforeDate(dateKeyLimit) {
 
 function getYesterdayPaceMessage(completedDays, delta) {
   if (isBeforeChallenge() || completedDays <= 0) return '';
-  if (delta === 0) return 'Yesterday we finished exactly on pace.';
-  if (delta > 0) return `Yesterday we finished ${formatNumber(delta)} points ahead of pace.`;
-  return `Yesterday we finished ${formatNumber(Math.abs(delta))} points behind pace.`;
+  if (delta === 0) return 'On pace yesterday — right on target!';
+  if (delta > 0) return `Ahead of pace yesterday by ${formatNumber(delta)} points!`;
+  return `Behind pace yesterday by ${formatNumber(Math.abs(delta))} points.`;
 }
 
 function getPlayerEntry(uid, dateKey) {
