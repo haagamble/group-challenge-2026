@@ -82,6 +82,7 @@ function cacheElements() {
   els.personalMonth = document.getElementById('personalMonth');
   els.personalToday = document.getElementById('personalToday');
   els.personalAverage = document.getElementById('personalAverage');
+  els.personalParticipation = document.getElementById('personalParticipation');
   els.personalActivities = document.getElementById('personalActivities');
   els.historyButton = document.getElementById('historyButton');
   els.historyDialog = document.getElementById('historyDialog');
