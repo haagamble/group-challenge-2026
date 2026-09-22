@@ -792,6 +792,7 @@ function renderPersonalSummary() {
     els.personalMonth.textContent = '0';
     els.personalToday.textContent = '0';
     els.personalAverage.textContent = '0';
+    els.personalParticipation.textContent = '0/0';
     renderPersonalActivities(null);
     return;
   }
@@ -800,6 +801,8 @@ function renderPersonalSummary() {
   els.personalMonth.textContent = formatNumber(computePlayerMonthTotal(ownedUid));
   els.personalToday.textContent = formatNumber(computePlayerTotalsForDate(ownedUid, todayKey));
   els.personalAverage.textContent = formatNumber(computePlayerDailyAverage(ownedUid));
+  const completedDays = Math.max(0, getDaysElapsed() - 1);
+  els.personalParticipation.textContent = `${computePlayerParticipationDays(ownedUid, todayKey)}/${completedDays}`;
   renderPersonalActivities(getPlayerEntry(ownedUid, todayKey));
 }
 
@@ -976,6 +979,14 @@ function computePlayerDailyAverage(uid) {
 
   const total = loggedDates.reduce((sum, dateKey) => sum + computePlayerTotalsForDate(uid, dateKey), 0);
   return Math.round(total / loggedDates.length);
+}
+
+function computePlayerParticipationDays(uid, todayKey) {
+  const entryMap = entriesByUid[uid] || {};
+  return Object.keys(entryMap).filter((dateKey) => {
+    const entry = entryMap[dateKey];
+    return isChallengeDateKey(dateKey) && dateKey < todayKey && entry?.selected?.length > 0;
+  }).length;
 }
 
 function computeTeamGoalThroughDay(lastDay) {

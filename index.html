@@ -73,6 +73,30 @@
         <button id="teamStatsButton" class="btn primary history-button" type="button" aria-haspopup="dialog" aria-controls="teamStatsDialog">View team stats</button>
       </section>
 
+      <section class="card panel">
+        <div class="section-label">Your progress</div>
+        <div class="personal-summary">
+          <div>
+            <span class="mini-label">Your today</span>
+            <strong id="personalToday">0</strong>
+          </div>
+          <div>
+            <span class="mini-label">Your month</span>
+            <strong id="personalMonth">0</strong>
+          </div>
+          <div>
+            <span class="mini-label">Your daily average</span>
+            <strong id="personalAverage">0</strong>
+          </div>
+          <div>
+            <span class="mini-label">Days participated</span>
+            <strong id="personalParticipation">0/0</strong>
+          </div>
+        </div>
+        <div id="personalActivities" class="personal-activities"></div>
+        <button id="historyButton" class="btn primary history-button" type="button" aria-haspopup="dialog">View daily history</button>
+      </section>
+
       <button id="helpButton" class="card panel instructions-button" type="button" aria-haspopup="dialog" aria-controls="helpDialog"><span class="instructions-help-mark" aria-hidden="true">?</span><span>How it works / FAQ</span></button>
 
       <section class="card panel">
@@ -89,31 +113,9 @@
         <div id="activityGrid" class="activity-grid"></div>
       </section>
 
-      <section class="two-column">
-        <article class="card panel">
-          <div class="section-label">Your progress</div>
-          <div class="personal-summary">
-            <div>
-              <span class="mini-label">Your today</span>
-              <strong id="personalToday">0</strong>
-            </div>
-            <div>
-              <span class="mini-label">Your month</span>
-              <strong id="personalMonth">0</strong>
-            </div>
-            <div>
-              <span class="mini-label">Your daily average</span>
-              <strong id="personalAverage">0</strong>
-            </div>
-          </div>
-          <div id="personalActivities" class="personal-activities"></div>
-          <button id="historyButton" class="btn primary history-button" type="button" aria-haspopup="dialog">View daily history</button>
-        </article>
-
-        <article class="card panel">
+      <section class="card panel">
           <div class="section-label">Yesterday's 400 Club</div>
           <div id="clubList" class="club-list"></div>
-        </article>
       </section>
 
       <section class="card panel">
