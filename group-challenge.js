@@ -535,7 +535,6 @@ function renderGoalMeta() {
   const teamTotal = computeTeamTotalForDate(getCurrentDate());
   const monthTotal = computeMonthTotal();
   const goalTotal = computeTeamGoalThroughDay(DAYS_IN_MONTH);
-  const dailyTeamGoal = participants.length * DAILY_PERSON_GOAL;
   const progress = goalTotal === 0 ? 0 : Math.min((monthTotal / goalTotal) * 100, 100);
   const daysElapsed = isBeforeChallenge() ? 0 : getDaysElapsed();
   const daysRemaining = Math.max(1, DAYS_IN_MONTH - daysElapsed + 1);
@@ -547,6 +546,8 @@ function renderGoalMeta() {
   const yesterdayPaceTarget = computeTeamGoalThroughDay(completedDays);
   const yesterdayDelta = yesterdayTotal - yesterdayPaceTarget;
   const challengeEnded = completedDays >= DAYS_IN_MONTH;
+  const teamPointsNeededEachDay = Math.ceil(Math.max(0, goalTotal - yesterdayTotal) / daysRemaining);
+  const averageNeededPerParticipant = Math.ceil(teamPointsNeededEachDay / participants.length);
   const showTodayTarget = !isBeforeChallenge() && !challengeEnded && goalTotal > 0;
 
   els.teamToday.textContent = formatNumber(teamTotal);
@@ -562,10 +563,10 @@ function renderGoalMeta() {
     ? monthTotal >= goalTotal
       ? 'Challenge complete! We reached our group goal.'
       : `Challenge complete. We finished ${formatNumber(goalTotal - monthTotal)} points short of our group goal.`
-    : `We need to average ${formatNumber(Math.ceil(Math.max(0, goalTotal - yesterdayTotal) / daysRemaining / participants.length))} points daily per person to win the month.`;
+    : `We need to average ${formatNumber(averageNeededPerParticipant)} points daily per person to win the month. Since not everyone can participate every day, aim closer to 400 points when you can to help keep the team on track.`;
   els.goalTodayTarget.classList.toggle('hidden', !showTodayTarget);
   els.goalTodayTarget.textContent = showTodayTarget
-    ? `Daily team goal: ${formatNumber(dailyTeamGoal)} points`
+    ? `Team points needed each day: ${formatNumber(teamPointsNeededEachDay)}`
     : '';
   const showYesterday = completedDays > 0 && !challengeEnded && yesterdayPaceTarget > 0;
   els.goalYesterday.classList.toggle('hidden', !showYesterday);
