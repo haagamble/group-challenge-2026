@@ -69,6 +69,7 @@ function cacheElements() {
   els.testBanner = document.getElementById('testBanner');
   els.resetButton = document.getElementById('resetTestButton');
   els.teamToday = document.getElementById('teamToday');
+  els.teamTodayRemaining = document.getElementById('teamTodayRemaining');
   els.teamMonth = document.getElementById('teamMonth');
   els.goalPace = document.getElementById('goalPace');
   els.goalText = document.getElementById('goalText');
@@ -548,13 +549,20 @@ function renderGoalMeta() {
   const challengeEnded = completedDays >= DAYS_IN_MONTH;
   const teamPointsNeededEachDay = Math.ceil(Math.max(0, goalTotal - yesterdayTotal) / daysRemaining);
   const averageNeededPerParticipant = Math.ceil(teamPointsNeededEachDay / participants.length);
+  const teamPointsRemainingToday = Math.max(0, teamPointsNeededEachDay - teamTotal);
   const showTodayTarget = !isBeforeChallenge() && !challengeEnded && goalTotal > 0;
+  const showAverageMessage = !isBeforeChallenge() && !challengeEnded && goalTotal > 0;
 
   els.teamToday.textContent = formatNumber(teamTotal);
+  els.teamTodayRemaining.classList.toggle('hidden', !showTodayTarget);
+  els.teamTodayRemaining.textContent = teamPointsRemainingToday > 0
+    ? `(${formatNumber(teamPointsRemainingToday)} more points to reach today's target)`
+    : '(Today\'s target reached)';
   els.teamMonth.textContent = formatNumber(monthTotal);
   els.goalPace.textContent = `${Math.round(progress)}%`;
   els.goalText.textContent = `${formatNumber(monthTotal)} / ${formatNumber(goalTotal)}`;
   els.goalBar.style.width = `${progress}%`;
+  els.goalMessage.classList.toggle('average-needed', showAverageMessage);
   els.goalMessage.textContent = isBeforeChallenge()
     ? `The challenge starts ${formatDate(getChallengeStartDate())}.`
     : goalTotal === 0
