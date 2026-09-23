@@ -535,9 +535,10 @@ function renderGoalMeta() {
   const teamTotal = computeTeamTotalForDate(getCurrentDate());
   const monthTotal = computeMonthTotal();
   const goalTotal = computeTeamGoalThroughDay(DAYS_IN_MONTH);
+  const dailyTeamGoal = participants.length * DAILY_PERSON_GOAL;
   const progress = goalTotal === 0 ? 0 : Math.min((monthTotal / goalTotal) * 100, 100);
   const daysElapsed = isBeforeChallenge() ? 0 : getDaysElapsed();
-  const paceTarget = computeTeamGoalThroughDay(daysElapsed);
+  const daysRemaining = Math.max(1, DAYS_IN_MONTH - daysElapsed + 1);
   const parts = getChallengeDateParts();
   const actualToday = dateFromChallengeParts(parts.year, parts.month, parts.day);
   const completedDays = Math.max(0, Math.min(DAYS_IN_MONTH, Math.floor((actualToday - getChallengeStartDate()) / ONE_DAY_MS)));
@@ -546,8 +547,6 @@ function renderGoalMeta() {
   const yesterdayPaceTarget = computeTeamGoalThroughDay(completedDays);
   const yesterdayDelta = yesterdayTotal - yesterdayPaceTarget;
   const challengeEnded = completedDays >= DAYS_IN_MONTH;
-  const todayTarget = Math.max(0, paceTarget - yesterdayTotal);
-  const remaining = Math.max(0, todayTarget - teamTotal);
   const showTodayTarget = !isBeforeChallenge() && !challengeEnded && goalTotal > 0;
 
   els.teamToday.textContent = formatNumber(teamTotal);
@@ -563,12 +562,10 @@ function renderGoalMeta() {
     ? monthTotal >= goalTotal
       ? 'Challenge complete! We reached our group goal.'
       : `Challenge complete. We finished ${formatNumber(goalTotal - monthTotal)} points short of our group goal.`
-    : remaining === 0
-    ? 'Today\'s pace target is met! Every extra point puts us further ahead.'
-    : `${formatNumber(remaining)} more points needed today to finish on pace.`;
+    : `We need to average ${formatNumber(Math.ceil(Math.max(0, goalTotal - yesterdayTotal) / daysRemaining / participants.length))} points daily per person to win the month.`;
   els.goalTodayTarget.classList.toggle('hidden', !showTodayTarget);
   els.goalTodayTarget.textContent = showTodayTarget
-    ? `Team target today: ${formatNumber(todayTarget)} points${yesterdayDelta < 0 ? ' (includes yesterday\'s shortfall)' : ''}`
+    ? `Daily team goal: ${formatNumber(dailyTeamGoal)} points`
     : '';
   const showYesterday = completedDays > 0 && !challengeEnded && yesterdayPaceTarget > 0;
   els.goalYesterday.classList.toggle('hidden', !showYesterday);
