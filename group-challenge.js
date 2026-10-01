@@ -421,6 +421,7 @@ function refreshAll() {
 }
 
 function render() {
+  renderFinalStats();
   renderNames();
   renderGoalMeta();
   renderDailyActivities();
@@ -827,6 +828,85 @@ function celebrateGoalReached() {
   window.setTimeout(() => burst.remove(), 3500);
 }
 
+function hasChallengeEnded() {
+  const parts = getChallengeDateParts();
+  return parts.year > CHALLENGE_YEAR || (parts.year === CHALLENGE_YEAR && parts.month > CHALLENGE_MONTH + 1);
+}
+
+function computeFinalStats() {
+  const players = participants.map(person => ({ ...person, points: 0, days: 0 }));
+  const activities = ACTIVITY_DEFS.map(activity => ({ id: activity.id, name: activity.name, points: 0 }));
+  const days = [];
+  for (let day = 1; day <= DAYS_IN_MONTH; day++) {
+    const date = dateFromChallengeParts(CHALLENGE_YEAR, CHALLENGE_MONTH + 1, day);
+    const key = formatDateKey(date);
+    const doubleId = getDoubleActivityId(date);
+    let points = 0;
+    let clubCount = 0;
+    for (const player of players) {
+      const earned = computePlayerTotalsForDate(player.uid, key);
+      player.points += earned;
+      if (earned > 0) player.days++;
+      if (earned >= 400) clubCount++;
+      points += earned;
+      const entry = getPlayerEntry(player.uid, key);
+      for (const activity of activities) {
+        if (!entry?.selected?.includes(activity.id)) continue;
+        const definition = getActivity(activity.id);
+        activity.points += computeActivityBasePoints(definition,
+          normalizeActivityAmount(definition, entry.values?.[activity.id] || 0)) * (activity.id === doubleId ? 2 : 1);
+      }
+    }
+    days.push({ date, points, clubCount });
+  }
+  const highest = (rows, field) => {
+    const value = Math.max(0, ...rows.map(row => row[field]));
+    return { value, rows: value > 0 ? rows.filter(row => row[field] === value) : [] };
+  };
+  const total = days.reduce((sum, day) => sum + day.points, 0);
+  const minimum = Math.min(...activities.map(activity => activity.points));
+  return {
+    total,
+    leaders: highest(players, 'points'),
+    allDays: players.filter(player => player.days === DAYS_IN_MONTH).length,
+    biggestClub: highest(days, 'clubCount'),
+    bestDay: highest(days, 'points'),
+    totalClubDays: days.reduce((sum, day) => sum + day.clubCount, 0),
+    mostPopular: highest(activities, 'points'),
+    leastPopular: { value: minimum, rows: total > 0 ? activities.filter(activity => activity.points === minimum) : [] }
+  };
+}
+
+function renderFinalStats() {
+  const section = document.getElementById('finalStats');
+  const visible = hasChallengeEnded() && loadState === 'ready';
+  section.classList.toggle('hidden', !visible);
+  if (!visible) return;
+  const stats = computeFinalStats();
+  const names = result => result.rows.map(row => row.name).join(', ');
+  const dates = result => result.rows.map(row => formatDate(row.date)).join(', ');
+  document.getElementById('finalStatsNote').textContent = stats.total > 0
+    ? 'September 1-30 results, including double points. All ties are shown. Activity rankings include unused activities at zero points. Totals update if saved entries are corrected.'
+    : 'No points were recorded for this challenge.';
+  const rows = [
+    ['Highest point total', stats.leaders.rows.length ? names(stats.leaders) + ' - ' + formatNumber(stats.leaders.value) + ' points' : 'No points recorded'],
+    ['Number of people who participated all 30 days', String(stats.allDays)],
+    ['Biggest 400 Club day', stats.biggestClub.rows.length ? dates(stats.biggestClub) + ' - ' + stats.biggestClub.value + ' people' : 'No 400-point days'],
+    ['Most popular activity', stats.mostPopular.rows.length ? names(stats.mostPopular) + ' - ' + formatNumber(stats.mostPopular.value) + ' points each' : 'No points recorded'],
+    ['Least popular activity', stats.leastPopular.rows.length ? names(stats.leastPopular) + ' - ' + formatNumber(stats.leastPopular.value) + ' points each' : 'No points recorded'],
+    ['Highest-scoring team day', stats.bestDay.rows.length ? dates(stats.bestDay) + ' - ' + formatNumber(stats.bestDay.value) + ' points' : 'No points recorded'],
+    ['Total 400-point days across everyone', String(stats.totalClubDays)]
+  ];
+  const list = document.getElementById('finalStatsList');
+  list.replaceChildren();
+  for (const [label, value] of rows) {
+    const item = document.createElement('div');
+    const term = document.createElement('dt'); term.textContent = label;
+    const description = document.createElement('dd'); description.textContent = value;
+    item.append(term, description); list.appendChild(item);
+  }
+}
+
 function renderPersonalSummary() {
   els.historyButton.disabled = !ownedUid;
   if (!ownedUid) {
@@ -842,8 +922,8 @@ function renderPersonalSummary() {
   els.personalMonth.textContent = formatNumber(computePlayerMonthTotal(ownedUid));
   els.personalToday.textContent = formatNumber(computePlayerTotalsForDate(ownedUid, todayKey));
   els.personalAverage.textContent = formatNumber(computePlayerDailyAverage(ownedUid));
-  const completedDays = Math.max(0, getDaysElapsed() - 1);
-  els.personalParticipation.textContent = `${computePlayerParticipationDays(ownedUid, todayKey)}/${completedDays}`;
+  const completedDays = isBeforeChallenge() ? 0 : getDaysElapsed();
+  els.personalParticipation.textContent = `${completedDays ? computePlayerParticipationDays(ownedUid, todayKey) : 0}/${completedDays}`;
   renderPersonalActivities(getPlayerEntry(ownedUid, todayKey));
 }
 
@@ -1026,7 +1106,7 @@ function computePlayerParticipationDays(uid, todayKey) {
   const entryMap = entriesByUid[uid] || {};
   return Object.keys(entryMap).filter((dateKey) => {
     const entry = entryMap[dateKey];
-    return isChallengeDateKey(dateKey) && dateKey < todayKey && entry?.selected?.length > 0;
+    return isChallengeDateKey(dateKey) && dateKey <= todayKey && computePlayerTotalsForDate(uid, dateKey) > 0;
   }).length;
 }
 

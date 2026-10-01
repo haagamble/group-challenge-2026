@@ -125,7 +125,7 @@ identity, so participants should not clear browser data during the challenge.
 
 ## Privacy Note
 
-The app UI intentionally does not show individual point totals to the group.
+During the challenge, the app UI does not show individual point totals to the group. After September ends, the final highlights show the highest monthly total and the names of participants tied for it.
 Everyone can see:
 
 - who has joined
@@ -136,7 +136,7 @@ Everyone can see:
 
 This is a small-group web app. Authenticated participants can technically read
 the shared Firebase data that powers the group totals, but the app does not
-present individual scores in the interface. Stronger privacy would require a
+present individual daily scores in the interface. Stronger privacy would require a
 server-side aggregation layer such as Cloud Functions.
 
 ## Deploy With GitHub Pages
@@ -151,3 +151,12 @@ server-side aggregation layer such as Cloud Functions.
 All files in this folder, including `firebase-config.js`,
 `manifest.webmanifest`, `service-worker.js`, `database.rules.json`, and
 `icons/`, should be included in the repository.
+
+## Final September highlights
+
+Visible from October 1, 2026 at midnight Pacific time. Rankings include ties;
+activity totals apply existing caps and double points, including zero-point
+activities in the least-popular ranking. All-days participation requires positive
+points on each of September's 30 days. The personal Days with points counter
+includes today and uses all 30 days after completion. Corrected entries update
+the highlights on refresh. Run `node verify-final-stats.cjs` for regression checks.

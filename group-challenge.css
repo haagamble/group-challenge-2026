@@ -882,3 +882,9 @@ body:has(.history-dialog[open]) {
   .two-column, .stats-grid { display: grid; }
   .site-header { align-items: flex-start; }
 }
+
+.final-stats-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 16px 0 0; }
+.final-stats-list > div { padding: 14px; background: var(--accent-soft); border-radius: 10px; }
+.final-stats-list dt { color: var(--text-soft); font-size: 13px; margin-bottom: 8px; }
+.final-stats-list dd { margin: 0; font-weight: 700; line-height: 1.5; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .final-stats-list { grid-template-columns: 1fr; } }

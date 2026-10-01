@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest?v=33">
   <link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="group-challenge.css?v=48">
+  <link rel="stylesheet" href="group-challenge.css?v=49">
 </head>
 <body>
   <div class="app-shell">
@@ -44,6 +44,11 @@
     <div id="identityNote" class="identity-note hidden"></div>
 
     <main id="challengeContent" class="hidden">
+      <section id="finalStats" class="card panel hidden" aria-labelledby="finalStatsTitle">
+        <h2 id="finalStatsTitle">September challenge highlights</h2>
+        <p id="finalStatsNote" class="card-note"></p>
+        <dl id="finalStatsList" class="final-stats-list"></dl>
+      </section>
       <section class="stats-grid">
         <article class="stat-card accent">
           <div class="stat-label">Team today</div>
@@ -90,7 +95,7 @@
             <strong id="personalAverage">0</strong>
           </div>
           <div>
-            <span class="mini-label">Days participated</span>
+            <span class="mini-label">Days with points</span>
             <strong id="personalParticipation">0/0</strong>
           </div>
         </div>
@@ -163,7 +168,7 @@
           </div>
           <p>Other covers swimming, football, cycling, and other unlisted activities. Award yourself up to 100 points total each day across these activities, with 100 meaning doable but challenging for you. Use a consistent standard, and only count exercise you have not logged in another category. Other counts as one of your 3 choices and does not receive double points.</p>
           <p>Each person adds 250 points per day to the goal, from their first day with points through September 30. The goal grows as people start participating.</p>
-          <p>This includes days they skip afterward. Joining without logging points does not add to the goal. Starting September 9 adds 5,500 points (22 days); starting September 11 adds 5,000 (20 days). Team pace uses the same start dates. People can see who joined and the team totals, but not each person's daily score.</p>
+          <p>This includes days they skip afterward. Joining without logging points does not add to the goal. Starting September 9 adds 5,500 points (22 days); starting September 11 adds 5,000 (20 days). Team pace uses the same start dates. People can see who joined and the team totals, but not each person's daily score. From October 1 Pacific time, final highlights show the highest monthly total and the participant names tied for it, plus team and activity statistics. Days with points includes today and counts only days with positive points.</p>
           <p>Challenge days follow Pacific time. The 400 club celebrates people who reached the daily max yesterday.</p>
           <p>Push ups may be wall pushups, knee pushups, or full pushups. Sit ups may be full sit ups or crunches. Stairs can be up and/or down. One bird dog rep means a right-left pair. Dancing may be ballet, breakdancing, kitchen dancing, or any movement you are prepared to defend as rhythmic.</p>
     </div>
@@ -188,6 +193,6 @@
   <div class="toast" id="toast"></div>
 
   <script src="firebase-config.js?v=2"></script>
-  <script src="group-challenge.js?v=50"></script>
+  <script src="group-challenge.js?v=53"></script>
 </body>
 </html>
